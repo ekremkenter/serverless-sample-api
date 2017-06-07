@@ -1,0 +1,76 @@
+service: sample-api
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-central-1
+  
+  #bunlar function bazinda da verilebiliyor
+  runtime: nodejs6.10
+  memorySize: 512 # optional, default is 1024
+  timeout: 10 # optional, default is 6
+  #
+
+  versionFunctions: false # optional, default is true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sns:publish"
+        - "sns:create"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
+custom:
+  # bucket: bucketReference
+  bucket: awsmeetupbucket
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  hello:
+    handler: handler.hello
+
+  watchdog:
+    handler: handler.watchdog
+    events:
+      - schedule: rate(1 minute)
+#      - schedule: cron(0 6 * * ? *) #run at 6:00 am (UTC)(9AM TR time) every day
+
+  postprocess:
+    handler: handler.s3postprocess
+    events:
+      - s3:
+          bucket: ${self:custom.bucket}
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .png
+      - s3:
+          bucket: ${self:custom.bucket}
+          event: s3:ObjectRemoved:*
+    environment:
+      snsTopicArn: 
+        Fn::Join:
+          - ":"
+          - - "arn:aws:sns"
+            - Ref: AWS::Region
+            - Ref: AWS::AccountId
+            - "MySNSTopic"
+
+
+resources:
+ Resources:
+  # S3BucketBucketReference:
+  #     Type: AWS::S3::Bucket
+  #     DeletionPolicy: Retain
+  #     Properties:
+  #       BucketName: awsmeetupbucket
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: MySNSTopic
+      DisplayName: AWSMeetup Demo
+      Subscription:
+      - Endpoint: "ekremkenter@gmail.com"
+        Protocol: email
