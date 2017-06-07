@@ -11,6 +11,9 @@ provider:
   timeout: 10 # optional, default is 6
   #
 
+  apiKeys: # List of API keys to be used by your service API Gateway REST API
+    - ${self:service}-${self:custom.stage}-key
+
   versionFunctions: false # optional, default is true
   iamRoleStatements:
     - Effect: "Allow"
@@ -31,6 +34,19 @@ custom:
 functions:
   hello:
     handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: GET
+#        path: hello
+#        method: GET
+#        private: true
+  getIp:
+    handler: iphandler.getIp
+    events:
+      - http:
+          path: getip
+          method: GET
 
   watchdog:
     handler: handler.watchdog

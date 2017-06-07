@@ -1,9 +1,6 @@
 'use strict';
 var AWS = require("aws-sdk");
-
 var request = require('request');
-var AWS = require("aws-sdk");
-var moment = require('moment');
 
 
 module.exports.hello = (event, context, callback) => {
@@ -11,8 +8,8 @@ module.exports.hello = (event, context, callback) => {
     statusCode: 200,
     body: JSON.stringify({
       message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
+      input: event
+    })
   };
 
   callback(null, response);
@@ -39,22 +36,21 @@ module.exports.s3postprocess = (event, context, callback) => {
 
 module.exports.watchdog = (event, context, callback) => {
   const url = "https://gmail.com";
-  request(, function(error, response, body) {
-        console.log('error:', error); // Print the error if one occurred
+  request(url, function(error, response, body) {
+        // console.log('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
+        // console.log('body:', body); // Print the HTML for the Google homepage.
 
-        if(response.statusCode!=200){
-              var sns = new AWS.SNS();
-              var params = {
-                  Message: `Your url is unreachable ${url}`,
-                  Subject: `Watchdog alert`,
-                  TopicArn: process.env.snsTopicArn
-              };
-              sns.publish(params, context.done);
-
+        if(response && response.statusCode!=200){
+            var sns = new AWS.SNS();
+            var params = {
+              Message: `Your url is unreachable ${url}`,
+              Subject: `Watchdog alert`,
+              TopicArn: process.env.snsTopicArn
+            };
+            sns.publish(params, context.done);
         }else{
-          console.log('Everything is fine!');
+            console.log('Everything is fine!');
         }
         // callback(null, {
         //     statusCode: response && response.statusCode,
@@ -65,8 +61,4 @@ module.exports.watchdog = (event, context, callback) => {
         //         body: body})
         // });
     });
-
-
-
-
 }
