@@ -5,9 +5,9 @@ provider:
   stage: dev
   region: eu-central-1
   
-  #bunlar function bazinda da verilebiliyor
+  #Below 3 parameters can be changed in each function
   runtime: nodejs6.10
-  memorySize: 512 # optional, default is 1024
+  memorySize: 256 # optional, default is 1024
   timeout: 10 # optional, default is 6
   #
 
@@ -77,11 +77,6 @@ functions:
 
 resources:
  Resources:
-  # S3BucketBucketReference:
-  #     Type: AWS::S3::Bucket
-  #     DeletionPolicy: Retain
-  #     Properties:
-  #       BucketName: awsmeetupbucket
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -90,3 +85,5 @@ resources:
       Subscription:
       - Endpoint: "ekremkenter@gmail.com"
         Protocol: email
+plugins:
+  - serverless-offline

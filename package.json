@@ -1,0 +1,27 @@
+{
+  "name": "sample-api",
+  "version": "1.0.0",
+  "description": "Sample Api",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekremkenter/serverless-sample-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ekremkenter/serverless-sample-api/issues"
+  },
+  "homepage": "https://github.com/ekremkenter/serverless-sample-api#readme",
+  "dependencies": {
+    "aws-sdk": "^2.64.0",
+    "maxmind": "^2.2.0",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^3.14.1"
+  }
+}

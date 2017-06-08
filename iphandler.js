@@ -4,10 +4,11 @@ var cityLookup = maxmind.openSync('GeoLite2-City.mmdb');
 module.exports.getIp = (event, context, callback) => {
 
     var ip;
-    if(event.input && event.input.queryStringParameters.ip){
-        ip = event.input.queryStringParameters.ip;
-    }else{
-        ip = event.input.requestContext.identity.sourceIp;
+    if (event.queryStringParameters && event.queryStringParameters.ip) {
+        ip = event.queryStringParameters.ip;
+    } else {
+        ip = event.requestContext.identity.sourceIp;
+
     }
 
     var city = cityLookup.get(ip);
